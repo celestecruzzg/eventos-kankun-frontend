@@ -1,0 +1,2 @@
+dependencia:
+npm install react-router-hash-link
