@@ -1,2 +1,2 @@
 dependencia:
-npm install react-router-hash-link
+npm i lucide-react
