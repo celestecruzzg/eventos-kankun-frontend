@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './AppRoutes.tsx'
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
-=======
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -23,6 +11,9 @@ import { Dashboardadmin } from "./pages/Admin/DashboardAdmin";
 import DashboardUser from "./pages/DashboardUser";
 import LandingPage from "./pages/landingPage/landingPage";
 import { Hero } from './components/Landing/LandinngHero'
+import ParticipantesAdmin from "./pages/Admin/ParticipantesAdmin";
+import Participantes from "./pages/Participantes";
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -38,9 +29,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/login" />
         <Route path="/registro" />
         <Route path="/admin/Dashboard" element={<Dashboardadmin />} />
+        <Route path="/admin/participantes" element={<ParticipantesAdmin />} />
         <Route path="/Dashboard" element={<DashboardUser />} />
+        <Route path="/participantes" element={<Participantes />} />
       </Routes>
     </Router>
   </React.StrictMode>
 );
->>>>>>> 430cd8b (Todo hasta ahora menos la parte de Ramon)

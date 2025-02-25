@@ -6,19 +6,20 @@ import { Link } from "react-router-dom"
 import { BookMarked, Calendar, LayoutDashboard, Users } from "lucide-react"
 import NavbarUser from "./navbarUser"
 
-interface Reserva {
+interface Participante {
   id: number
   nombre: string
-  descripcion: string
+  rol: string
+  evento: string
 }
 
-const Reservas = () => {
-  const [activeNav, setActiveNav] = useState("Reservas y recursos")
-  const [reservas] = useState<Reserva[]>([
-    { id: 1, nombre: "Reserva 1", descripcion: "Descripción de la reserva 1" },
-    { id: 2, nombre: "Reserva 2", descripcion: "Descripción de la reserva 2" },
-    { id: 3, nombre: "Reserva 3", descripcion: "Descripción de la reserva 3" },
-    { id: 4, nombre: "Reserva 4", descripcion: "Descripción de la reserva 4" },
+const Participantes = () => {
+  const [activeNav, setActiveNav] = useState("Participantes")
+  const [participantes] = useState<Participante[]>([
+    { id: 1, nombre: "Juan Pérez", rol: "Admin", evento: "Convención de juegos" },
+    { id: 2, nombre: "María García", rol: "Participante", evento: "Feria Gastronomía" },
+    { id: 3, nombre: "Carlos Rodríguez", rol: "Host", evento: "Trabajos Jardín UT" },
+    { id: 4, nombre: "Ana Martínez", rol: "Participante", evento: "Trabajos Jardín UT" },
   ])
 
   const navItems = [
@@ -57,18 +58,19 @@ const Reservas = () => {
       <main className="flex-1 overflow-x-hidden overflow-y-auto ml-8 mr-8 mt-6">
         <NavbarUser />
         <div className="container mx-auto px-6 py-8">
-          <h3 className="text-white text-3xl font-bold mb-6">Reservas y recursos</h3>
+          <h3 className="text-white text-3xl font-bold mb-6">Participantes</h3>
 
           <section>
             <div className="bg-white p-6 rounded-lg shadow-md">
-              {reservas.length === 0 ? (
-                <p className="text-gray-500 text-center">No hay reservas creadas</p>
+              {participantes.length === 0 ? (
+                <p className="text-gray-500 text-center">No hay participantes registrados</p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {reservas.map((reserva) => (
-                    <div key={reserva.id} className="border p-4 rounded-lg shadow relative">
-                      <h4 className="font-bold">{reserva.nombre}</h4>
-                      <p className="text-sm">{reserva.descripcion}</p>
+                  {participantes.map((participante) => (
+                    <div key={participante.id} className="border p-4 rounded-lg shadow relative">
+                      <h4 className="font-bold">{participante.nombre}</h4>
+                      <p className="text-sm">Rol: {participante.rol}</p>
+                      <p className="text-sm">Evento: {participante.evento}</p>
                     </div>
                   ))}
                 </div>
@@ -81,5 +83,5 @@ const Reservas = () => {
   )
 }
 
-export default Reservas
+export default Participantes
 

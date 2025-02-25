@@ -12,7 +12,7 @@ export default function DashboardUser() {
    const navItems = [
       { name: "Dashboard", icon: LayoutDashboard , href:"/Dashboard"},
       { name: "Eventos", icon: Calendar ,href:"/eventos"},
-      { name: "Participantes", icon: Users, href:"/FALTA LINK!!!" },
+      { name: "Participantes", icon: Users, href:"/participantes" },
       { name: "Reservas y recursos", icon: BookMarked , href:"/reservas"},
     ]
 
