@@ -83,7 +83,7 @@ const NavbarAdmin = () => {
                     Ajustes
                   </a>
                   <a
-                    href="se debe cerrar sesion"
+                    href="/"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
                     role="menuitem"
                     tabIndex={-1}

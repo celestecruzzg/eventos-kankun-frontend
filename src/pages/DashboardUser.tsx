@@ -1,58 +1,83 @@
 "use client"
+
 import { useState } from "react"
 import logo from "../assets/logo.png"
 import { Link } from "react-router-dom"
-import { BookMarked, Calendar, CheckCircle, LayoutDashboard, Users } from "lucide-react"
+import { BookMarked, Calendar, CheckCircle, LayoutDashboard, Users, ChevronLeft, ChevronRight } from "lucide-react"
 import NavbarUser from "./navbarUser"
 
-
 export default function DashboardUser() {
-   const [activeNav, setActiveNav] = useState("Dashboard")
+  const [activeNav, setActiveNav] = useState("Dashboard")
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
-   const navItems = [
-      { name: "Dashboard", icon: LayoutDashboard , href:"/Dashboard"},
-      { name: "Eventos", icon: Calendar ,href:"/eventos"},
-      { name: "Participantes", icon: Users, href:"/participantes" },
-      { name: "Reservas y recursos", icon: BookMarked , href:"/reservas"},
-    ]
+  const navItems = [
+    { name: "Dashboard", icon: LayoutDashboard, href: "/Dashboard" },
+    { name: "Eventos", icon: Calendar, href: "/eventos" },
+    { name: "Participantes", icon: Users, href: "/participantes" },
+    { name: "Reservas y recursos", icon: BookMarked, href: "/reservas" },
+  ]
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
 
-    return (
-      <div className="flex min-h-screen bg-[#9BB7EB]">
-        {/* Sidebar */}
-        <aside className="w-64 bg-[#1a2b4a] text-white">
-          <div className="p-6">
-            <img src={logo} alt="Logo" className="h-18 mb-8" />
-          </div>
-          <nav className="space-y-2 ml-2 mr-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`flex items-center gap-4 px-6 py-3 text-sm font-medium ${
-                  activeNav === item.name
-                    ? "bg-[#5c72b4b1] text-white rounded-lg"
-                    : "text-gray-300 hover:bg-[#5c72b4b1] hover:text-white rounded-lg"
-                }`}
-                onClick={() => setActiveNav(item.name)}
-              >
-                <item.icon className="w-5 h-5" />
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </aside>
-    
-        <main className="flex-1 overflow-x-hidden overflow-y-auto ml-8 mr-8 mt-6">
+  return (
+    <div className="flex min-h-screen bg-[#9BB7EB]">
+      {/* Sidebar con animación */}
+      <aside
+        className={`transition-all duration-300 ease-in-out ${
+          sidebarOpen ? "w-64" : "w-20"
+        } bg-[#1a2b4a] text-white relative`}
+      >
+        <div className={`p-6 ${sidebarOpen ? "" : "flex justify-center"}`}>
+          <img
+            src={logo || "/placeholder.svg"}
+            alt="Logo"
+            className={`transition-all duration-300 ${sidebarOpen ? "h-18 mb-8" : "h-12 w-12 mb-4"}`}
+          />
+        </div>
+        <nav className="space-y-2 ml-2 mr-2">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.href}
+              className={`flex items-center gap-4 px-6 py-3 text-sm font-medium ${
+                activeNav === item.name
+                  ? "bg-[#5c72b4b1] text-white rounded-lg"
+                  : "text-gray-300 hover:bg-[#5c72b4b1] hover:text-white rounded-lg"
+              } ${!sidebarOpen && "justify-center px-2"}`}
+              onClick={() => setActiveNav(item.name)}
+            >
+              <item.icon className="w-5 h-5" />
+              {sidebarOpen && <span>{item.name}</span>}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Botón para abrir/cerrar el sidebar */}
+        <button
+          onClick={toggleSidebar}
+          className="absolute top-1/2 -right-3 bg-[#1a2b4a] text-white p-1 rounded-full shadow-md hover:bg-[#5c72b4b1] transition-colors"
+          aria-label={sidebarOpen ? "Cerrar sidebar" : "Abrir sidebar"}
+        >
+          {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+        </button>
+      </aside>
+
+      <main
+        className={`flex-1 overflow-x-hidden overflow-y-auto transition-all duration-300 ${
+          sidebarOpen ? "ml-0" : "ml-0"
+        }`}
+      >
+        <div className="mx-8 mt-6">
           <NavbarUser />
           <div className="container mx-auto px-6 py-8">
             <h3 className="text-white text-3xl font-bold mb-6">Bienvenida Jill</h3>
-    
+
             {/* Contenedor principal de columnas */}
             <div className="flex gap-8">
               {/* Columna izquierda */}
               <div className="space-y-8 w-80">
-
                 {/* Profile Card */}
                 <div className="bg-white rounded-2xl p-6 shadow">
                   <div className="text-center">
@@ -68,7 +93,7 @@ export default function DashboardUser() {
                     <h1 className="text-[#1a2b4a] mb-2">Jill Valentine</h1>
                     <span className="text-gray-500 text-sm">Username</span>
                   </div>
-    
+
                   <div className="mt-4 space-y-4">
                     <div className="flex justify-between items-center">
                       <label className="text-black text-sm">Nombre</label>
@@ -79,7 +104,7 @@ export default function DashboardUser() {
                       <div className="bg-[#f5f7fa] px-3 py-2 rounded-lg text-[#1a2b4a] mr-8">Jillw@gmail.com</div>
                     </div>
                   </div>
-    
+
                   <div className="grid grid-cols-2 gap-4 mt-6">
                     <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-100">
                       <BookMarked className="w-12 h-12 text-[#569fd7]" />
@@ -97,7 +122,7 @@ export default function DashboardUser() {
                     </div>
                   </div>
                 </div>
-    
+
                 {/* Help Section */}
                 <div className="rounded-2xl p-6">
                   <h2 className="text-[#1a2b4a] mb-2">Necesitas Ayuda?</h2>
@@ -106,14 +131,13 @@ export default function DashboardUser() {
                     ninguno!
                   </p>
                   <Link to="/eventos">
-                  <button className="flex items-center gap-2 bg-[#1a2b4a] text-white px-6 py-3 rounded-full hover:bg-[#273859] transition-colors">
-                    Mis Eventos
-                  </button>
+                    <button className="flex items-center gap-2 bg-[#1a2b4a] text-white px-6 py-3 rounded-full hover:bg-[#273859] transition-colors">
+                      Mis Eventos
+                    </button>
                   </Link>
-                  
                 </div>
               </div>
-    
+
               {/* Columna derecha */}
               <div className="flex-1">
                 {/* Activity Chart */}
@@ -139,7 +163,7 @@ export default function DashboardUser() {
                     <div className="w-full h-full rounded-full bg-[conic-gradient(#4caf50_0%_50%,#f44336_50%_65%,#ff9800_65%_100%)]"></div>
                   </div>
                 </div>
-    
+
                 {/* Upcoming Events */}
                 <div className="bg-white rounded-2xl p-4 shadow">
                   <h2 className="text-[#1a2b4a] font-bold mt-3">EVENTOS PROXIMOS</h2>
@@ -174,7 +198,7 @@ export default function DashboardUser() {
                         </span>
                       </div>
                     </div>
-    
+
                     <div className="grid grid-cols-[auto_1fr_auto] items-center gap-6 p-4 rounded-lg hover:bg-[#f5f7fa] transition-colors">
                       <div className="font-bold text-[#1a2b4a]">20:00</div>
                       <div className="flex items-center gap-4">
@@ -210,8 +234,9 @@ export default function DashboardUser() {
               </div>
             </div>
           </div>
-        </main>
-      </div>
-    );
+        </div>
+      </main>
+    </div>
+  )
 }
 

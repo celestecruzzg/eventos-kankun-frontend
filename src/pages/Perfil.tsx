@@ -24,7 +24,6 @@ export default function UserProfile() {
   return (
     <div className="min-h-screen bg-[#9BB7EB] p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-6xl grid md:grid-cols-[350px_1fr] gap-6 bg-white rounded-lg overflow-hidden shadow-lg">
-        {/* Panel izquierdo - Información del perfil */}
         <div className="bg-[#222B60] p-8 text-white flex flex-col items-center">
           <h1 className="text-2xl font-semibold mb-2">Perfil de Participante</h1>
           <p className="text-slate-300 mb-8">Gestiona tu información</p>

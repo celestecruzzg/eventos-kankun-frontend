@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { FiMoreVertical } from "react-icons/fi"
 import { AiOutlinePlus } from "react-icons/ai"
-import { Users, LayoutDashboard, Calendar, BookMarked } from "lucide-react"
+import { Users, LayoutDashboard, Calendar, BookMarked, ChevronLeft, ChevronRight } from "lucide-react"
 import logo from "../../assets/logo.png"
 import { Link } from "react-router-dom"
 import NavbarAdmin from "./navbarAdmin"
@@ -21,6 +21,11 @@ const ParticipantesAdmin = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
   const [participanteActual, setParticipanteActual] = useState<Participante | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true) // Estado para controlar el sidebar
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
 
   const rolesDisponibles = ["Participante", "Admin", "Host"]
 
@@ -95,10 +100,18 @@ const ParticipantesAdmin = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#1a2b4a] text-white">
-        <div className="p-6">
-          <img src={logo || "/placeholder.svg"} alt="Logo" className="h-18 mb-8" />
+      {/* Sidebar con animación */}
+      <aside
+        className={`transition-all duration-300 ease-in-out ${
+          sidebarOpen ? "w-64" : "w-20"
+        } bg-[#1a2b4a] text-white relative`}
+      >
+        <div className={`p-6 ${sidebarOpen ? "" : "flex justify-center"}`}>
+          <img
+            src={logo || "/placeholder.svg"}
+            alt="Logo"
+            className={`transition-all duration-300 ${sidebarOpen ? "h-18 mb-8" : "h-12 w-12 mb-4"}`}
+          />
         </div>
         <nav className="space-y-2 ml-2 mr-2">
           {navItems.map((item) => (
@@ -109,182 +122,197 @@ const ParticipantesAdmin = () => {
                 item.name === "Participantes"
                   ? "bg-[#5c72b4b1] text-white rounded-lg"
                   : "text-gray-300 hover:bg-[#5c72b4b1] hover:text-white rounded-lg"
-              }`}
+              } ${!sidebarOpen && "justify-center px-2"}`}
             >
               <item.icon className="w-5 h-5" />
-              {item.name}
+              {sidebarOpen && <span>{item.name}</span>}
             </Link>
           ))}
         </nav>
+
+        {/* Botón para abrir/cerrar el sidebar */}
+        <button
+          onClick={toggleSidebar}
+          className="absolute top-1/2 -right-3 bg-[#1a2b4a] text-white p-1 rounded-full shadow-md hover:bg-[#5c72b4b1] transition-colors"
+          aria-label={sidebarOpen ? "Cerrar sidebar" : "Abrir sidebar"}
+        >
+          {sidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+        </button>
       </aside>
 
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 ml-8 mr-8 mt-6">
-        <NavbarAdmin />
+      <main
+        className={`flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 transition-all duration-300 ${
+          sidebarOpen ? "ml-0" : "ml-0"
+        }`}
+      >
+        <div className="mx-8 mt-6">
+          <NavbarAdmin />
 
-        <div className={`transition-all duration-300 ${editModalOpen ? "filter blur-sm" : ""}`}>
-          <section>
-            <div className="mb-2 flex justify-between items-center mt-6">
-              <h3 className="text-xl font-semibold">Listado de Participantes</h3>
-              <button
-                onClick={() => setModalOpen(true)}
-                className="flex items-center gap-1 bg-[#5C72B4] text-white p-2 rounded hover:bg-[#222B60]"
-              >
-                <AiOutlinePlus size={20} /> <span className="hidden md:inline">Agregar Participante</span>
-              </button>
-            </div>
-            {modalOpen && (
-              <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                  <h2 className="text-lg font-semibold mb-4">Agregar Participante</h2>
+          <div className={`transition-all duration-300 ${editModalOpen ? "filter blur-sm" : ""}`}>
+            <section>
+              <div className="mb-2 flex justify-between items-center mt-6">
+                <h3 className="text-xl font-semibold">Listado de Participantes</h3>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="flex items-center gap-1 bg-[#5C72B4] text-white p-2 rounded hover:bg-[#222B60]"
+                >
+                  <AiOutlinePlus size={20} /> <span className="hidden md:inline">Agregar Participante</span>
+                </button>
+              </div>
+              {modalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm">
+                  <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                    <h2 className="text-lg font-semibold mb-4">Agregar Participante</h2>
 
-                  <label className="block mb-2 text-sm font-medium">Nombre</label>
-                  <input
-                    type="text"
-                    className="w-full border p-2 rounded"
-                    value={nuevoParticipante.nombre}
-                    onChange={(e) => setNuevoParticipante({ ...nuevoParticipante, nombre: e.target.value })}
-                  />
+                    <label className="block mb-2 text-sm font-medium">Nombre</label>
+                    <input
+                      type="text"
+                      className="w-full border p-2 rounded"
+                      value={nuevoParticipante.nombre}
+                      onChange={(e) => setNuevoParticipante({ ...nuevoParticipante, nombre: e.target.value })}
+                    />
 
-                  <label className="block mt-4 mb-2 text-sm font-medium">Evento</label>
-                  <input
-                    type="text"
-                    className="w-full border p-2 rounded"
-                    value={nuevoParticipante.evento}
-                    onChange={(e) => setNuevoParticipante({ ...nuevoParticipante, evento: e.target.value })}
-                  />
+                    <label className="block mt-4 mb-2 text-sm font-medium">Evento</label>
+                    <input
+                      type="text"
+                      className="w-full border p-2 rounded"
+                      value={nuevoParticipante.evento}
+                      onChange={(e) => setNuevoParticipante({ ...nuevoParticipante, evento: e.target.value })}
+                    />
 
-                  <label className="block mt-4 mb-2 text-sm font-medium">Roles</label>
-                  <select
-                    multiple
-                    className="w-full border p-2 rounded"
-                    onChange={(e) => {
-                      const seleccionados = Array.from(e.target.selectedOptions, (option) => option.value)
-                      setNuevoParticipante({ ...nuevoParticipante, rol: seleccionados })
-                    }}
-                  >
-                    {rolesDisponibles.map((rol) => (
-                      <option key={rol} value={rol}>
-                        {rol}
-                      </option>
-                    ))}
-                  </select>
-
-                  <label className="block mt-4 mb-2 text-sm font-medium">Imagen (URL)</label>
-                  <input
-                    type="text"
-                    className="w-full border p-2 rounded"
-                    value={nuevoParticipante.imagen}
-                    onChange={(e) => setNuevoParticipante({ ...nuevoParticipante, imagen: e.target.value })}
-                  />
-
-                  <div className="flex justify-end mt-6">
-                    <button
-                      onClick={() => setModalOpen(false)}
-                      className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                    <label className="block mt-4 mb-2 text-sm font-medium">Roles</label>
+                    <select
+                      multiple
+                      className="w-full border p-2 rounded"
+                      onChange={(e) => {
+                        const seleccionados = Array.from(e.target.selectedOptions, (option) => option.value)
+                        setNuevoParticipante({ ...nuevoParticipante, rol: seleccionados })
+                      }}
                     >
-                      Cancelar
-                    </button>
-                    <button onClick={handleAgregarParticipante} className="bg-blue-600 text-white px-4 py-2 rounded">
-                      Guardar
-                    </button>
+                      {rolesDisponibles.map((rol) => (
+                        <option key={rol} value={rol}>
+                          {rol}
+                        </option>
+                      ))}
+                    </select>
+
+                    <label className="block mt-4 mb-2 text-sm font-medium">Imagen (URL)</label>
+                    <input
+                      type="text"
+                      className="w-full border p-2 rounded"
+                      value={nuevoParticipante.imagen}
+                      onChange={(e) => setNuevoParticipante({ ...nuevoParticipante, imagen: e.target.value })}
+                    />
+
+                    <div className="flex justify-end mt-6">
+                      <button
+                        onClick={() => setModalOpen(false)}
+                        className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                      >
+                        Cancelar
+                      </button>
+                      <button onClick={handleAgregarParticipante} className="bg-blue-600 text-white px-4 py-2 rounded">
+                        Guardar
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              {participantes.length === 0 ? (
-                <p className="text-gray-500 text-center">No hay participantes creados</p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {participantes.map((p) => (
-                    <div key={p.id} className="border p-4 rounded-lg shadow relative">
-                      <img
-                        src={p.imagen || "/placeholder.svg"}
-                        alt="Participante"
-                        className="w-full h-32 object-cover rounded mb-2"
-                      />
-                      <h4 className="font-bold">{p.nombre}</h4>
-                      <p className="text-sm">Roles: {p.rol.join(", ")}</p>
-                      <p className="text-sm">Evento: {p.evento}</p>
-                      <div className="absolute top-2 right-2 flex gap-2">
-                        <button onClick={() => abrirModalEdicion(p)} className="text-gray-600 hover:text-gray-900">
-                          <FiMoreVertical size={20} />
-                        </button>
-                        <button
-                          onClick={() => handleEliminarParticipante(p.id)}
-                          className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               )}
-            </div>
-          </section>
-        </div>
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                {participantes.length === 0 ? (
+                  <p className="text-gray-500 text-center">No hay participantes creados</p>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {participantes.map((p) => (
+                      <div key={p.id} className="border p-4 rounded-lg shadow relative">
+                        <img
+                          src={p.imagen || "/placeholder.svg"}
+                          alt="Participante"
+                          className="w-full h-32 object-cover rounded mb-2"
+                        />
+                        <h4 className="font-bold">{p.nombre}</h4>
+                        <p className="text-sm">Roles: {p.rol.join(", ")}</p>
+                        <p className="text-sm">Evento: {p.evento}</p>
+                        <div className="absolute top-2 right-2 flex gap-2">
+                          <button onClick={() => abrirModalEdicion(p)} className="text-gray-600 hover:text-gray-900">
+                            <FiMoreVertical size={20} />
+                          </button>
+                          <button
+                            onClick={() => handleEliminarParticipante(p.id)}
+                            className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
 
-        {editModalOpen && participanteActual && (
-          <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-              <h2 className="text-lg font-semibold mb-4">Editar Participante</h2>
+          {editModalOpen && participanteActual && (
+            <div className="fixed inset-0 flex items-center justify-center bg-opacity-50 backdrop-blur-sm">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h2 className="text-lg font-semibold mb-4">Editar Participante</h2>
 
-              <label className="block mb-2 text-sm font-medium">Nombre</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded"
-                value={participanteActual.nombre}
-                onChange={(e) => handleEditarCampo("nombre", e.target.value)}
-              />
+                <label className="block mb-2 text-sm font-medium">Nombre</label>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  value={participanteActual.nombre}
+                  onChange={(e) => handleEditarCampo("nombre", e.target.value)}
+                />
 
-              <label className="block mt-4 mb-2 text-sm font-medium">Evento</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded"
-                value={participanteActual.evento}
-                onChange={(e) => handleEditarCampo("evento", e.target.value)}
-              />
+                <label className="block mt-4 mb-2 text-sm font-medium">Evento</label>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  value={participanteActual.evento}
+                  onChange={(e) => handleEditarCampo("evento", e.target.value)}
+                />
 
-              <label className="block mt-4 mb-2 text-sm font-medium">Roles</label>
-              <select
-                multiple
-                className="w-full border p-2 rounded"
-                value={participanteActual.rol}
-                onChange={(e) => {
-                  const seleccionados = Array.from(e.target.selectedOptions, (option) => option.value)
-                  handleEditarCampo("rol", seleccionados)
-                }}
-              >
-                {rolesDisponibles.map((rol) => (
-                  <option key={rol} value={rol}>
-                    {rol}
-                  </option>
-                ))}
-              </select>
-
-              <label className="block mt-4 mb-2 text-sm font-medium">Imagen (URL)</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded"
-                value={participanteActual.imagen}
-                onChange={(e) => handleEditarCampo("imagen", e.target.value)}
-              />
-
-              <div className="flex justify-end mt-6">
-                <button
-                  onClick={() => setEditModalOpen(false)}
-                  className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                <label className="block mt-4 mb-2 text-sm font-medium">Roles</label>
+                <select
+                  multiple
+                  className="w-full border p-2 rounded"
+                  value={participanteActual.rol}
+                  onChange={(e) => {
+                    const seleccionados = Array.from(e.target.selectedOptions, (option) => option.value)
+                    handleEditarCampo("rol", seleccionados)
+                  }}
                 >
-                  Cancelar
-                </button>
-                <button onClick={handleEditarParticipante} className="bg-blue-600 text-white px-4 py-2 rounded">
-                  Guardar
-                </button>
+                  {rolesDisponibles.map((rol) => (
+                    <option key={rol} value={rol}>
+                      {rol}
+                    </option>
+                  ))}
+                </select>
+
+                <label className="block mt-4 mb-2 text-sm font-medium">Imagen (URL)</label>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  value={participanteActual.imagen}
+                  onChange={(e) => handleEditarCampo("imagen", e.target.value)}
+                />
+
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={() => setEditModalOpen(false)}
+                    className="bg-gray-400 text-white px-4 py-2 rounded mr-2"
+                  >
+                    Cancelar
+                  </button>
+                  <button onClick={handleEditarParticipante} className="bg-blue-600 text-white px-4 py-2 rounded">
+                    Guardar
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   )

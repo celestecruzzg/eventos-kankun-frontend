@@ -1,31 +1,36 @@
 "use client"
 import { useState } from "react"
 import { Bell, LogOut, Settings, User } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const NavbarUser = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate()
 
   const toggleDropdown = () => setIsOpen(!isOpen)
 
+  const handleLogout = () => {
+    // Eliminar los datos de usuario del localStorage
+    localStorage.removeItem("userData")
+    // Cerrar el dropdown
+    setIsOpen(false)
+    // Redirigir al usuario a la página de inicio
+    navigate("/")
+  }
 
   return (
-    <nav className="bg-white shadow-md  rounded-lg ">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+    <nav className="bg-white shadow-md rounded-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <h1 className="font-bold font-['Poppins', sans-serif]">Dashboard</h1>
-              
             </div>
-             
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            
             <div>
-            <h4 className="ml-3 text-indigo-800 font-['Poppins', sans-serif]">Jill Valentine</h4>
-            <p className="text-xs ml-14 text-gray-700 font-['Poppins', sans-serif]">Usuario</p>
-
+              <h4 className="ml-3 text-indigo-800 font-['Poppins', sans-serif]">Jill Valentine</h4>
+              <p className="text-xs ml-14 text-gray-700 font-['Poppins', sans-serif]">Usuario</p>
             </div>
             <div className="ml-3 relative">
               <div>
@@ -74,16 +79,16 @@ const NavbarUser = () => {
                     <Settings className="inline-block w-4 h-4 mr-2" />
                     Ajustes
                   </Link>
-                  <Link
-                    to="FALTA USUARIO"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
                     role="menuitem"
                     tabIndex={-1}
                     id="user-menu-item-2"
                   >
                     <LogOut className="inline-block w-4 h-4 mr-2" />
                     Sign out
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
@@ -123,8 +128,8 @@ const NavbarUser = () => {
 
       <div className="sm:hidden" id="mobile-menu">
         <div className="pt-2 pb-3 space-y-1">
-          <Link 
-            to="/Dashboard User"
+          <Link
+            to="/Dashboard"
             className="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
           >
             Dashboard
@@ -136,7 +141,7 @@ const NavbarUser = () => {
             Eventos
           </Link>
           <Link
-            to="/FALTA EL DE PARTICIPANTES"
+            to="/participantes"
             className="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
           >
             Participantes
@@ -171,23 +176,23 @@ const NavbarUser = () => {
           </div>
           <div className="mt-3 space-y-1">
             <Link
-              to="FALTA PERFIL DEL USER"
+              to="/perfil"
               className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
             >
               Perfil
             </Link>
             <Link
-              to="FALTAN AJUSTES DEL USER"
+              to="/perfil"
               className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
             >
               Ajustes
             </Link>
-            <Link
-              to="FALTA LINK DE LOG OUT"
-              className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+            <button
+              onClick={handleLogout}
+              className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
             >
               Sign out
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -195,5 +200,5 @@ const NavbarUser = () => {
   )
 }
 
-export default NavbarUser;
+export default NavbarUser
 
