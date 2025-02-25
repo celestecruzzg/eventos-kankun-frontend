@@ -13,6 +13,8 @@ import LandingPage from "./pages/landingPage/landingPage";
 import { Hero } from './components/Landing/LandinngHero'
 import ParticipantesAdmin from "./pages/Admin/ParticipantesAdmin";
 import Participantes from "./pages/Participantes";
+import ConfiguracionAdmin from "./pages/Admin/PerfilAdmin";
+import UserProfile from "./pages/Perfil";
 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -32,6 +34,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/admin/participantes" element={<ParticipantesAdmin />} />
         <Route path="/Dashboard" element={<DashboardUser />} />
         <Route path="/participantes" element={<Participantes />} />
+        <Route path="/admin/Perfil" element={<ConfiguracionAdmin />} />
+        <Route path="/Perfil" element={<UserProfile />} />
       </Routes>
     </Router>
   </React.StrictMode>
