@@ -1,22 +1,31 @@
-"use client"
-
-import type React from "react"
-import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { toast } from "react-hot-toast"
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
+import { FaSpinner } from "react-icons/fa" // Importa el spinner
 import logo from "../assets/logo.png"
 
 export function Header() {
   const [showModal, setShowModal] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
+    surnameP: "",
+    surnameM: "",
     email: "",
     password: "",
     confirmPassword: "",
+  })
+  const [errors, setErrors] = useState({
+    name: "",
     surnameP: "",
     surnameM: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   })
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
+  const [loading, setLoading] = useState(false) // Estado de carga
 
   useEffect(() => {
     document.body.style.overflow = showModal ? "hidden" : "unset"
@@ -26,25 +35,120 @@ export function Header() {
   }, [showModal])
 
   const handleRegisterClick = () => setShowModal(true)
-  const handleCloseModal = () => setShowModal(false)
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setFormData({
+      name: "",
+      surnameP: "",
+      surnameM: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    })
+    setErrors({
+      name: "",
+      surnameP: "",
+      surnameM: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    })
+  }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData({ ...formData, [name]: value })
+    setErrors({ ...errors, [name]: "" })
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      surnameP: "",
+      surnameM: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    }
+
+    let isValid = true
+
+    if (!formData.name.trim()) {
+      newErrors.name = "El nombre es requerido."
+      isValid = false
+    }
+    if (!formData.surnameP.trim()) {
+      newErrors.surnameP = "El apellido paterno es requerido."
+      isValid = false
+    }
+    if (!formData.surnameM.trim()) {
+      newErrors.surnameM = "El apellido materno es requerido."
+      isValid = false
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!formData.email.trim()) {
+      newErrors.email = "El correo electrónico es requerido."
+      isValid = false
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "El correo electrónico no es válido."
+      isValid = false
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "La contraseña es requerida."
+      isValid = false
+    } else if (formData.password.length < 6) {
+      newErrors.password = "La contraseña debe tener al menos 6 caracteres."
+      isValid = false
+    }
+
+    if (!formData.confirmPassword.trim()) {
+      newErrors.confirmPassword = "Confirma tu contraseña."
+      isValid = false
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Las contraseñas no coinciden."
+      isValid = false
+    }
+
+    setErrors(newErrors)
+    return isValid
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const { name, email, password, confirmPassword } = formData
-    if (!name || !email || !password || !confirmPassword) {
-      alert("Por favor, complete todos los campos.")
-      return
+
+    if (!validateForm()) return
+
+    setLoading(true) // Inicia la carga
+
+    try {
+      const response = await fetch("http://localhost:5223/api/Auth/register-participant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Nombre: formData.name,
+          ApPaterno: formData.surnameP,
+          ApMaterno: formData.surnameM,
+          Email: formData.email,
+          Contrasena: formData.password,
+        }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        toast.success("Registro exitoso. Verifica tu correo.")
+        handleCloseModal()
+      } else {
+        toast.error(result.Message || "Correo ya registrado, verifica los datos.")
+      }
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", error)
+      toast.error("Error al conectar con el servidor.")
+    } finally {
+      setLoading(false) // Termina la carga
     }
-    if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden.")
-      return
-    }
-    alert("Formulario enviado con éxito.")
-    handleCloseModal()
   }
 
   return (
@@ -72,14 +176,12 @@ export function Header() {
       {/* Modal */}
       <div
         className={`fixed inset-0 z-50 flex items-center justify-center
-          ${showModal ? "opacity-100 visible" : "opacity-0 invisible"}
-          transition-all duration-300 ease-in-out`}
+          ${showModal ? "opacity-100 visible" : "opacity-0 invisible"}`}
       >
         {/* Overlay con blur */}
         <div
           className={`fixed inset-0 bg-black/50 backdrop-blur-sm
-            ${showModal ? "opacity-100" : "opacity-0"}
-            transition-opacity duration-300`}
+            ${showModal ? "opacity-100" : "opacity-0"}`}
           onClick={handleCloseModal}
         />
 
@@ -89,7 +191,6 @@ export function Header() {
             transform transition-all duration-300 ease-out
             ${showModal ? "scale-100 translate-y-0 opacity-100" : "scale-95 translate-y-8 opacity-0"}`}
         >
-          {/* Botón de cerrar */}
           <button
             onClick={handleCloseModal}
             className="absolute right-4 top-4 p-1 text-gray-400 hover:text-gray-600
@@ -108,7 +209,7 @@ export function Header() {
             </svg>
           </button>
 
-          {/* Contenido del formulario */}
+          {/* Form Content */}
           <div className="p-6">
             <h2 className="text-2xl font-bold text-gray-900">Registrarse</h2>
             <p className="text-sm text-gray-500 mt-1">Crea una nueva cuenta</p>
@@ -122,6 +223,7 @@ export function Header() {
                 className="w-full p-2.5 border border-gray-300 rounded-lg"
                 placeholder="Nombre"
               />
+              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
 
               <input
                 type="text"
@@ -131,6 +233,7 @@ export function Header() {
                 className="w-full p-2.5 border border-gray-300 rounded-lg"
                 placeholder="Apellido Paterno"
               />
+              {errors.surnameP && <p className="text-red-500 text-sm">{errors.surnameP}</p>}
 
               <input
                 type="text"
@@ -140,6 +243,7 @@ export function Header() {
                 className="w-full p-2.5 border border-gray-300 rounded-lg"
                 placeholder="Apellido Materno"
               />
+              {errors.surnameM && <p className="text-red-500 text-sm">{errors.surnameM}</p>}
 
               <input
                 type="email"
@@ -149,50 +253,64 @@ export function Header() {
                 className="w-full p-2.5 border border-gray-300 rounded-lg"
                 placeholder="Correo Electrónico"
               />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
 
-              {/* Campo Contraseña con botón para mostrar */}
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={passwordVisible ? "text" : "password"}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg pr-10"
+                  className="w-full p-2.5 border border-gray-300 rounded-lg"
                   placeholder="Contraseña"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-2.5 text-gray-600 hover:text-gray-900"
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
                 >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                  {passwordVisible ? (
+                    <AiOutlineEyeInvisible size={24} />
+                  ) : (
+                    <AiOutlineEye size={24} />
+                  )}
                 </button>
               </div>
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
 
-              {/* Campo Confirmar Contraseña con botón para mostrar */}
               <div className="relative">
                 <input
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={confirmPasswordVisible ? "text" : "password"}
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full p-2.5 border border-gray-300 rounded-lg pr-10"
+                  className="w-full p-2.5 border border-gray-300 rounded-lg"
                   placeholder="Confirmar Contraseña"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-2 top-2.5 text-gray-600 hover:text-gray-900"
+                  className="absolute top-1/2 right-3 transform -translate-y-1/2"
+                  onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
                 >
-                  {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                  {confirmPasswordVisible ? (
+                    <AiOutlineEyeInvisible size={24} />
+                  ) : (
+                    <AiOutlineEye size={24} />
+                  )}
                 </button>
               </div>
+              {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
 
               <button
                 type="submit"
-                className="w-full mt-4 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                className="w-full bg-indigo-600 text-white rounded-lg py-2 mt-4 hover:bg-indigo-700 transition cursor-pointer"
+                disabled={loading} // Deshabilitar el botón durante la carga
               >
-                Registrarse
+                {loading ? (
+                  <FaSpinner className="animate-spin mx-auto" size={20} />
+                ) : (
+                  "Registrarse"
+                )}
               </button>
             </form>
           </div>

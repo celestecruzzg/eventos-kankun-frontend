@@ -82,8 +82,8 @@ const NavbarAdmin = () => {
                     <Settings className="inline-block w-4 h-4 mr-2" />
                     Ajustes
                   </a>
-                  <a
-                    href="se debe cerrar sesion"
+                  <Link
+                    to="/Login"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
                     role="menuitem"
                     tabIndex={-1}
@@ -91,7 +91,7 @@ const NavbarAdmin = () => {
                   >
                     <LogOut className="inline-block w-4 h-4 mr-2" />
                     Sign out
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>

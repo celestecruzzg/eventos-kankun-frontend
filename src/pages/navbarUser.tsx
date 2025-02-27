@@ -18,11 +18,11 @@ const NavbarUser = () => {
               <h1 className="font-bold font-['Poppins', sans-serif]">Dashboard</h1>
               
             </div>
-             
+            
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             
-            <div>
+            <div> {/* Aquí va el nombre del usuario (nombre y ap_paterno) y su rol */}
             <h4 className="ml-3 text-indigo-800 font-['Poppins', sans-serif]">Jill Valentine</h4>
             <p className="text-xs ml-14 text-gray-700 font-['Poppins', sans-serif]">Usuario</p>
 
@@ -75,7 +75,7 @@ const NavbarUser = () => {
                     Ajustes
                   </Link>
                   <Link
-                    to="FALTA USUARIO"
+                    to="/Login"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100"
                     role="menuitem"
                     tabIndex={-1}
@@ -157,7 +157,7 @@ const NavbarUser = () => {
                 alt="User avatar"
               />
             </div>
-            <div className="ml-3">
+            <div className="ml-3"> {/* Aquí va el nombre del usuario (nombre completo) */}
               <div className="text-base font-medium text-gray-800">Jill Valentine</div>
               <div className="text-sm font-medium text-gray-500">jill@example.com</div>
             </div>

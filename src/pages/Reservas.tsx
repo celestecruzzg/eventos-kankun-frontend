@@ -17,14 +17,12 @@ const Reservas = () => {
   const [reservas] = useState<Reserva[]>([
     { id: 1, nombre: "Reserva 1", descripcion: "Descripción de la reserva 1" },
     { id: 2, nombre: "Reserva 2", descripcion: "Descripción de la reserva 2" },
-    { id: 3, nombre: "Reserva 3", descripcion: "Descripción de la reserva 3" },
-    { id: 4, nombre: "Reserva 4", descripcion: "Descripción de la reserva 4" },
   ])
 
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/Dashboard" },
     { name: "Eventos", icon: Calendar, href: "/eventos" },
-    { name: "Participantes", icon: Users, href: "/participantes" },
+    { name: "Participantes", icon: Users, href: "/FALTA LINK!!!" },
     { name: "Reservas y recursos", icon: BookMarked, href: "/reservas" },
   ]
 
